@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <RPLidar.h>
+/*
 IntervalTimer myTimer;
 #include <MsTimer2.h>  // Timer
 #include <FlexCan.h>
-#include <kinetis_flexcan.h>
+#include <kinetis_flexcan.h>*/
 
 //angle d'observation de 110° (55*2)
 #define ANGLE_DOBSERVATION 55
@@ -15,15 +16,15 @@ IntervalTimer myTimer;
 
 RPLidar lidar;
 
-static CAN_message_t msg;
-static CAN_filter_t Carte_Main;
+//static CAN_message_t msg;
+//static CAN_filter_t Carte_Main;
 
 float x = 0, y = 0, angle = 0; // DEPLACEMENT venant du CAN
-boolean sens=true; // vient du CAN --> 1 : marche avant, 0 : marche arriere
+bool sens=true; // vient du CAN --> 1 : marche avant, 0 : marche arriere
 
 int i = 0;
 int derniere_detection=0, diff_timer=0;
-boolean passe=true;
+bool passe=true;
 int distance, valeur[1][2];
 //byte simul_CAN[5]={0xE8,0xDC,0x5A,0x5A,0x01};
 int c1=0,c2=0,c3=0,c4,c5,c6;
@@ -35,30 +36,34 @@ void IntrerrupTimer(){
   if (derniere_detection>=100000)derniere_detection=100;
 }
 
+
 void setup() {
   Serial.begin(9600);
   lidar.begin(Serial2); //On est sur le TX2 et RX2
 
-  Carte_Main.id=0x200;
+  //Carte_Main.id=0x200;
 
-  Can0.begin(1000000);
-  Can0.setFilter(Carte_Main,1);
+  //Can0.begin(1000000);
+  //Can0.setFilter(Carte_Main,1);
 
 
-  pinMode(13,OUTPUT);
-  digitalWrite(13,HIGH);
+  pinMode(PA4,OUTPUT);
+  digitalWrite(PA4,HIGH);
+
+  //HAL_GPIO_TogglePin(GPIOA,PA14);
 
   pinMode(RPLIDAR_MOTOR, OUTPUT);
 
   analogWrite(RPLIDAR_MOTOR, 250); //démarrage du moteur du lidar
 
-  myTimer.begin(IntrerrupTimer, 1000);
+  //myTimer.begin(IntrerrupTimer, 1000);
 }
 
 
 void loop() {
+  
   // la fonction read renvoie 1 quand un message arrive dans le buffer du controlleur CAN
-  while( Can0.read(msg)) {
+  /*while( Can0.read(msg)) {
     //la trame 0 fait office de filtre avec un '/' envoyé depuis la carte principale
     if(msg.buf[0]=='/'){
       c1=msg.buf[4];
@@ -88,7 +93,7 @@ void loop() {
       // Serial.println(sens);
     }
 
-  }
+  }*/
 
 
   //Acquisition de 200 points allant de 315 à 45°, et de 135 à 225°
@@ -99,7 +104,10 @@ void loop() {
       //lecture des valeurs du lidar et met dans la liste
       valeur[i][0]=lidar.getCurrentPoint().distance;
       valeur[i][1]=lidar.getCurrentPoint().angle;
-
+      Serial.print("distance=");
+      Serial.println(valeur[i][0]);
+      Serial.print("angle=");
+      Serial.println(valeur[i][1]);
       if (x>900 && x>2100 && y>1700){}//pas de détection si on EST dans la zone rocheuse
       else
       {
@@ -121,9 +129,9 @@ void loop() {
               if (x_point<=LIMITE_X-100 && x_point>=0+100 && y_point<=LIMITE_Y-100 && y_point>=0+100 && derniere_detection>50){
                 derniere_detection=0; //Si on retourne dans cette condition dans la même seconde
                 Serial.println("DETECTION");
-                Serial.println(x_point);
-                Serial.println(y_point);
-                envoi_CAN();
+                //Serial.println(x_point);
+               // Serial.println(y_point);
+                //envoi_CAN();
               }
             }
             
@@ -134,7 +142,7 @@ void loop() {
 
   }else {//si bug du lidar
 
-    analogWrite(RPLIDAR_MOTOR, 0); //stop the rplidar motor
+    //analogWrite(RPLIDAR_MOTOR, 0); //stop the rplidar motor
 
     // try to detect RPLIDAR...
     rplidar_response_device_info_t info;
@@ -143,7 +151,7 @@ void loop() {
        lidar.startScan();
 
        // start motor rotating at max allowed speed
-       analogWrite(RPLIDAR_MOTOR, 250);
+       //analogWrite(RPLIDAR_MOTOR, 250);
        delay(1000);
     }
   }
@@ -151,9 +159,9 @@ void loop() {
 
 //envoi de trame CAN à la carte principale
 void envoi_CAN(){
-  msg.id=0x100; //id de la carte principale
+  /*msg.id=0x100; //id de la carte principale
   msg.buf[0]='L';//dit à la carte principale qu'il s'agit un message de la carte Lidar
   msg.buf[1]='D';//dit à la carte principale qu'il y a DETECTION
   msg.len=2;
-  Can0.write(msg);
+  Can0.write(msg);*/
 }
