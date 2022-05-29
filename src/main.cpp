@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <RPLidar.h>
+#include <STM32CAN.h>
 /*
 IntervalTimer myTimer;
 #include <MsTimer2.h>  // Timer
