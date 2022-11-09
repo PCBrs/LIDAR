@@ -20,7 +20,7 @@ void setup()
   Can1.begin(CAN_BPS_1000K);
 
   delay(10);
-//Indication du démarrage du lidar et du can par un clignotement de la LED
+  // Indication du démarrage du lidar et du can par un clignotement de la LED
   pinMode(LED, OUTPUT);
   digitalToggle(LED);
   delay(50);
@@ -34,11 +34,10 @@ void setup()
 
   pinMode(RPLIDAR_MOTOR, OUTPUT);
   analogWrite(RPLIDAR_MOTOR, 250); // démarrage du moteur du lidar
-
 }
 
 void loop()
-{
+{  
   // la fonction read renvoie 1 quand un message arrive dans le buffer du controlleur CAN
   while (Can1.read(Received_msg))
   {
@@ -49,7 +48,7 @@ void loop()
       Transmit_msg.data.bytes[0] = 0x20;
       Can1.write(Transmit_msg);
       break;
-    case 0x102: //Message de fin de match
+    case 0x102: // Message de fin de match
       analogWrite(RPLIDAR_MOTOR, 0);
       lidar.end();
       break;
@@ -66,7 +65,6 @@ void loop()
     Serial.println(distance);
     Serial.print("angle=");
     Serial.println(angle);
-    digitalToggle(PA14);
     // si la valeur de la liste est dans l'angle d'observation
     if (((angle >= 0 && angle <= ANGLE_DOBSERVATION) || (angle >= 360 - ANGLE_DOBSERVATION && angle < 360)) || (angle >= 180 - ANGLE_DOBSERVATION && angle <= 180 + ANGLE_DOBSERVATION))
     {
