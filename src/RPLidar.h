@@ -43,7 +43,7 @@ struct RPLidarMeasurement
     bool  startBit;
 };
 
-#define RPLIDAR_MOTOR 5
+#define RPLIDAR_MOTOR PA8
 #define D_NEGLIGE 3000
 
 void envoi_CAN();
