@@ -69,9 +69,9 @@ void loop()
       { // si dans la zone de vigilance
         envoi_CAN();
         Serial.print("distance=");
-         Serial.println(distance);
-         Serial.print("angle=");
-         Serial.println(angle);
+        Serial.println(distance);
+        Serial.print("angle=");
+        Serial.println(angle);
       }
     }
   }
@@ -96,10 +96,10 @@ void loop()
 // envoi de trame CAN à la carte principale
 void envoi_CAN()
 {
-  uint32_t distance_bit = (uint32_t)(distance * 4.0f);
-  uint8_t distance_1 = (distance_bit & 0xFF000000)>>31;
-  uint8_t distance_2 = (distance_bit & 0x00FF0000)>>16;
-  uint8_t distance_3 = (distance_bit & 0x0000FF00)>>8;
+  uint32_t distance_bit = (uint32_t)(distance * 4.0f) ;
+  uint8_t distance_1 = (distance_bit & 0xFF000000) >> 24; // inutile
+  uint8_t distance_2 = (distance_bit & 0x00FF0000) >> 16;
+  uint8_t distance_3 = (distance_bit & 0x0000FF00) >> 8;
   uint8_t distance_4 = distance_bit & 0x000000FF;
 
   Transmit_msg.id = 0x202; // id de la carte principale
@@ -109,9 +109,9 @@ void envoi_CAN()
   Transmit_msg.data.bytes[3] = distance_4;
 
   uint32_t angle_bit = (uint32_t)(angle * 64.0f);
-  uint8_t angle_1 = (angle_bit & 0xFF000000)>>31;
-  uint8_t angle_2 = (angle_bit & 0x00FF0000)>>16;
-  uint8_t angle_3 = (angle_bit & 0x0000FF00)>>8;
+  uint8_t angle_1 = (angle_bit & 0xFF000000) >> 24; // inutile
+  uint8_t angle_2 = (angle_bit & 0x00FF0000) >> 16;
+  uint8_t angle_3 = (angle_bit & 0x0000FF00) >> 8;
   uint8_t angle_4 = angle_bit & 0x000000FF;
 
   Transmit_msg.data.bytes[4] = angle_1;
