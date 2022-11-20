@@ -31,7 +31,7 @@ void setup()
   digitalToggle(LED);
   delay(50);
   digitalWrite(LED, HIGH);
-
+  delay(500); //waiting for stabilisation of 5V supply
   pinMode(RPLIDAR_MOTOR, OUTPUT);
   analogWrite(RPLIDAR_MOTOR, 250); // démarrage du moteur du lidar
 }
