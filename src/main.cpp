@@ -6,9 +6,11 @@
 #define ANGLE_DOBSERVATION 55
 #define DISTANCE_MAX 3000
 #define LED PA14
+
 RPLidar lidar;
 CAN_message_t Received_msg;
 CAN_message_t Transmit_msg;
+
 
 float distance = 0, angle = 0;
 
